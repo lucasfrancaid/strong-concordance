@@ -21,11 +21,6 @@ const Index = () => {
             <p className="text-muted-foreground mb-6">
               Digite um número Strong para buscar seu significado em português.
             </p>
-            <div className="p-2 bg-secondary/20 rounded-md inline-block mb-4">
-              <p className="text-sm text-muted-foreground">
-                Conectado à base de dados PostgreSQL expandida com dicionário Hebraico completo
-              </p>
-            </div>
           </div>
 
           <StrongSearch />
