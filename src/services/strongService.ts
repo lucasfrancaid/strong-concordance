@@ -6,6 +6,19 @@ export async function searchStrong(code: string): Promise<{ number: string; stro
   const normalizedCode = code.trim().toUpperCase();
   
   try {
+    // Primeira tentativa: buscar diretamente do dicionário local
+    if (strongDictionary[normalizedCode]) {
+      console.log("Código Strong encontrado no dicionário local:", normalizedCode);
+      return {
+        number: normalizedCode,
+        strong: strongDictionary[normalizedCode],
+      };
+    }
+    
+    // Se não encontrado no dicionário local, tenta a "API"
+    // Em produção, você teria uma API real conectada ao PostgreSQL
+    console.log("Código Strong não encontrado no dicionário local, tentando API:", normalizedCode);
+    
     const response = await fetch(`/api/strong/${normalizedCode}`);
     
     if (!response.ok) {
