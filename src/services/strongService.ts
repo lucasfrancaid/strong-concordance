@@ -1,58 +1,65 @@
 
-import { toast } from "@/hooks/use-toast";
+import { strongDictionary } from "@/data/strong-data";
 
-interface StrongResult {
-  number: string;
-  definition: string;
-}
-
-export async function searchStrong(code: string): Promise<StrongResult | null> {
+export async function searchStrong(code: string): Promise<{ number: string; definition: string } | null> {
+  // Normaliza o código Strong (maiúsculas, sem espaços)
+  const normalizedCode = code.trim().toUpperCase();
+  
   try {
-    // Formatar o código Strong para o formato adequado (G#### ou H####)
-    let formattedCode = code.trim().toUpperCase();
-    
-    // Verificar se começa com G ou H, caso contrário, assumir H (hebraico) se for apenas número
-    if (!formattedCode.startsWith("G") && !formattedCode.startsWith("H")) {
-      // Tentar determinar se é grego ou hebraico com base no número
-      const numericPart = parseInt(formattedCode, 10);
-      if (numericPart > 0 && numericPart < 10000) {
-        if (numericPart <= 8674) {
-          formattedCode = `H${formattedCode.padStart(4, '0')}`;
-        } else {
-          formattedCode = `G${formattedCode.padStart(4, '0')}`;
-        }
-      }
-    } else {
-      // Já tem H ou G, apenas formatar o número para ter 4 dígitos
-      const prefix = formattedCode.charAt(0);
-      const numPart = formattedCode.substring(1);
-      formattedCode = `${prefix}${numPart.padStart(4, '0')}`;
+    // Primeira tentativa: buscar diretamente do dicionário local
+    if (strongDictionary[normalizedCode]) {
+      console.log("Código Strong encontrado no dicionário local:", normalizedCode);
+      return {
+        number: normalizedCode,
+        definition: strongDictionary[normalizedCode]
+      };
     }
     
-    // Fazer a requisição para a API
-    const response = await fetch(`/api/strong/${formattedCode}`);
+    // Se não encontrado no dicionário local, tenta a "API"
+    // Em produção, você teria uma API real conectada ao PostgreSQL
+    console.log("Código Strong não encontrado no dicionário local, tentando API:", normalizedCode);
+    
+    const response = await fetch(`/api/strong/${normalizedCode}`);
     
     if (!response.ok) {
-      throw new Error(`Erro ao buscar: ${response.statusText}`);
+      throw new Error(`Erro na requisição: ${response.status}`);
+    }
+    
+    // Verifica se o tipo de conteúdo é JSON
+    const contentType = response.headers.get("content-type");
+    if (contentType && contentType.indexOf("application/json") === -1) {
+      // Se não for JSON, tenta obter o texto e fazer parse manual
+      const text = await response.text();
+      try {
+        const data = JSON.parse(text);
+        return data;
+      } catch (parseError) {
+        console.error("Erro ao parsear resposta:", text);
+        // Fallback para o dicionário local
+        if (strongDictionary[normalizedCode]) {
+          return {
+            number: normalizedCode,
+            definition: strongDictionary[normalizedCode]
+          };
+        }
+        return null;
+      }
     }
     
     const data = await response.json();
-    
-    if (!data || !data.definition) {
-      return null;
-    }
-    
-    return {
-      number: formattedCode,
-      definition: data.definition
-    };
+    return data;
   } catch (error) {
     console.error("Erro ao buscar código Strong:", error);
-    toast({
-      title: "Erro",
-      description: "Não foi possível conectar ao banco de dados.",
-      variant: "destructive",
-    });
+    
+    // Fallback para o dicionário local em caso de erro
+    if (strongDictionary[normalizedCode]) {
+      console.log("Usando fallback do dicionário local para:", normalizedCode);
+      return {
+        number: normalizedCode,
+        definition: strongDictionary[normalizedCode]
+      };
+    }
+    
     return null;
   }
 }

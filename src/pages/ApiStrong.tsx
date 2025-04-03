@@ -24,11 +24,24 @@ export default function ApiStrong() {
     }
   }, [code]);
 
-  // Retornar dados como JSON
+  // Retornar dados como JSON puro
   useEffect(() => {
     if (document) {
+      // Remove todo o conteúdo HTML existente
+      document.head.innerHTML = '';
       document.body.innerHTML = '';
+      
+      // Define o tipo de conteúdo como JSON
+      const meta = document.createElement('meta');
+      meta.httpEquiv = 'Content-Type';
+      meta.content = 'application/json';
+      document.head.appendChild(meta);
+      
+      // Adiciona os dados JSON como texto sem formatação HTML
       document.body.textContent = JSON.stringify(data);
+      
+      // Remove estilos para garantir que seja apenas texto puro
+      document.body.style.all = 'unset';
       document.body.style.fontFamily = 'monospace';
       document.body.style.whiteSpace = 'pre';
     }
