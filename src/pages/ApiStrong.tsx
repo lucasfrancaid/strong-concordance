@@ -10,8 +10,7 @@ export default function ApiStrong() {
 
   useEffect(() => {
     if (code) {
-      // Aqui você faria a consulta ao PostgreSQL
-      // Por enquanto, usamos o dicionário existente para simulação
+      // Simula consulta ao PostgreSQL usando o dicionário expandido
       const definition = strongDictionary[code];
       
       if (definition) {

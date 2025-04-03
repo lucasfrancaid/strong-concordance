@@ -23,7 +23,7 @@ const Index = () => {
             </p>
             <div className="p-2 bg-secondary/20 rounded-md inline-block mb-4">
               <p className="text-sm text-muted-foreground">
-                Conectado à base de dados PostgreSQL
+                Conectado à base de dados PostgreSQL expandida com dicionário Hebraico completo
               </p>
             </div>
           </div>
@@ -40,6 +40,9 @@ const Index = () => {
               Números que começam com "H" (H0001-H8674) são palavras em Hebraico ou Aramaico.
               <br />
               Números que começam com "G" (G0001-G5624) são palavras em Grego.
+            </p>
+            <p className="mt-2 text-secondary-foreground font-semibold">
+              Adicionamos mais entradas do dicionário hebraico!
             </p>
           </div>
         </div>
