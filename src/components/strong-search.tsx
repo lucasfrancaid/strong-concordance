@@ -86,7 +86,8 @@ export function StrongSearch() {
               {result.number}
             </span>
           </div>
-          <p className="text-lg whitespace-pre-line">{result.strong.lemma} {result.strong.xlit}{result.strong.pron}</p>
+          <p className="text-lg whitespace-pre-line">{result.strong.lemma} - {result.strong.xlit}</p>
+          <p className="text-lg whitespace-pre-line"><b>Pron</b>: {result.strong.pron}</p>
           <p className="text-lg whitespace-pre-line"><b>Strong</b>: {result.strong.strongs_def}</p>
           <p className="text-lg whitespace-pre-line"><b>KJV</b>: {result.strong.kjv_def}</p>
           <p className="text-lg whitespace-pre-line"><b>Deriv.</b>: {result.strong.derivation}</p>
