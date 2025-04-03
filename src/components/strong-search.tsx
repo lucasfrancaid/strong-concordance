@@ -2,15 +2,17 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { useToast } from "@/components/ui/use-toast";
-import { strongDictionary } from "@/data/strong-data";
+import { useToast } from "@/hooks/use-toast";
+import { searchStrong } from "@/services/strongService";
+import { Loader2 } from "lucide-react";
 
 export function StrongSearch() {
   const [query, setQuery] = useState("");
   const [result, setResult] = useState<{ number: string; definition: string } | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
 
-  const handleSearch = (e: React.FormEvent) => {
+  const handleSearch = async (e: React.FormEvent) => {
     e.preventDefault();
     
     if (!query.trim()) {
@@ -22,42 +24,30 @@ export function StrongSearch() {
       return;
     }
 
-    // Processar o número Strong (formatar para G#### ou H####)
-    let formattedQuery = query.trim().toUpperCase();
+    setIsLoading(true);
     
-    // Verificar se começa com G ou H, caso contrário, assumir H (hebraico) se for apenas número
-    if (!formattedQuery.startsWith("G") && !formattedQuery.startsWith("H")) {
-      // Tentar determinar se é grego ou hebraico com base no número
-      const numericPart = parseInt(formattedQuery, 10);
-      if (numericPart > 0 && numericPart < 10000) {
-        if (numericPart <= 8674) {
-          formattedQuery = `H${formattedQuery.padStart(4, '0')}`;
-        } else {
-          formattedQuery = `G${formattedQuery.padStart(4, '0')}`;
-        }
+    try {
+      const strongResult = await searchStrong(query);
+      
+      if (strongResult) {
+        setResult(strongResult);
+      } else {
+        toast({
+          title: "Não encontrado",
+          description: `Nenhum resultado encontrado para o número Strong "${query.toUpperCase()}"`,
+          variant: "destructive",
+        });
+        setResult(null);
       }
-    } else {
-      // Já tem H ou G, apenas formatar o número para ter 4 dígitos
-      const prefix = formattedQuery.charAt(0);
-      const numPart = formattedQuery.substring(1);
-      formattedQuery = `${prefix}${numPart.padStart(4, '0')}`;
-    }
-
-    // Buscar no dicionário
-    const strongResult = strongDictionary[formattedQuery];
-    
-    if (strongResult) {
-      setResult({
-        number: formattedQuery,
-        definition: strongResult,
-      });
-    } else {
+    } catch (error) {
+      console.error("Erro na busca:", error);
       toast({
-        title: "Não encontrado",
-        description: `Nenhum resultado encontrado para o número Strong "${formattedQuery}"`,
+        title: "Erro",
+        description: "Ocorreu um erro durante a busca. Tente novamente mais tarde.",
         variant: "destructive",
       });
-      setResult(null);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -70,9 +60,21 @@ export function StrongSearch() {
           onChange={(e) => setQuery(e.target.value)}
           placeholder="Digite o número Strong (ex: H1254 ou G3056)"
           className="flex-1 text-lg"
+          disabled={isLoading}
         />
-        <Button type="submit" className="bg-primary hover:bg-primary/90">
-          Pesquisar
+        <Button 
+          type="submit" 
+          className="bg-primary hover:bg-primary/90"
+          disabled={isLoading}
+        >
+          {isLoading ? (
+            <>
+              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+              Buscando...
+            </>
+          ) : (
+            "Pesquisar"
+          )}
         </Button>
       </form>
 
