@@ -8,7 +8,7 @@ import { Loader2 } from "lucide-react";
 
 export function StrongSearch() {
   const [query, setQuery] = useState("");
-  const [result, setResult] = useState<{ number: string; definition: string } | null>(null);
+  const [result, setResult] = useState<{ number: string; definition: string; derivation: string } | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
 
@@ -86,6 +86,7 @@ export function StrongSearch() {
             </span>
           </div>
           <p className="text-lg whitespace-pre-line">{result.definition}</p>
+          <p className="text-lg whitespace-pre-line">{result.derivation}</p>
         </div>
       )}
     </div>

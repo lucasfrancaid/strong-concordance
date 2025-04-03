@@ -1,12 +1,12 @@
 
 import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { strongDictionary } from "@/data/strong-data";
+import { strongDictionary } from "@/data/strong-dictionary";
 
 // Esta página simula uma API de backend, em produção você teria um endpoint real
 export default function ApiStrong() {
   const { code } = useParams<{ code: string }>();
-  const [data, setData] = useState<{ number: string; definition: string } | null>(null);
+  const [data, setData] = useState<{ number: string; definition: string; derivation: string } | null>(null);
 
   useEffect(() => {
     if (code) {
@@ -16,7 +16,8 @@ export default function ApiStrong() {
       if (definition) {
         setData({
           number: code,
-          definition: definition
+          definition: `${definition.lemma} ${definition.xlit} (${definition.pron}) - Strong: ${definition.strongs_def} | KJV: ${definition.kjv_def}`,
+          derivation: definition.derivation,
         });
       } else {
         setData(null);

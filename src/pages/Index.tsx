@@ -7,7 +7,7 @@ const Index = () => {
     <div className="min-h-screen flex flex-col bg-background text-foreground transition-colors duration-300">
       <header className="py-4 px-6 border-b">
         <div className="container flex justify-between items-center">
-          <h1 className="text-2xl font-bold text-primary">Concordância Strong</h1>
+          <h1 className="text-2xl font-bold text-primary">Forte Palavra BR</h1>
           <ThemeToggle />
         </div>
       </header>
@@ -32,12 +32,9 @@ const Index = () => {
               dos textos originais mesmo sem conhecimento dessas línguas.
             </p>
             <p className="mt-2">
-              Números que começam com "H" (H0001-H8674) são palavras em Hebraico ou Aramaico.
+              Números que começam com "H" (H1-H8674) são palavras em Hebraico ou Aramaico.
               <br />
-              Números que começam com "G" (G0001-G5624) são palavras em Grego.
-            </p>
-            <p className="mt-2 text-secondary-foreground font-semibold">
-              Adicionamos mais entradas do dicionário hebraico!
+              Números que começam com "G" (G1-G5624) são palavras em Grego.
             </p>
           </div>
         </div>
