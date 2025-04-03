@@ -1,23 +1,22 @@
 
 import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { strongDictionary } from "@/data/strong-dictionary";
+import { Strong, strongDictionary } from "@/data/strong-dictionary";
 
 // Esta página simula uma API de backend, em produção você teria um endpoint real
 export default function ApiStrong() {
   const { code } = useParams<{ code: string }>();
-  const [data, setData] = useState<{ number: string; definition: string; derivation: string } | null>(null);
+  const [data, setData] = useState<{ number: string; strong: Strong } | null>(null);
 
   useEffect(() => {
     if (code) {
       // Simula consulta ao PostgreSQL usando o dicionário expandido
-      const definition = strongDictionary[code];
+      const strong: Strong = strongDictionary[code];
       
-      if (definition) {
+      if (strong) {
         setData({
           number: code,
-          definition: `${definition.lemma} ${definition.xlit} (${definition.pron}) - Strong: ${definition.strongs_def} | KJV: ${definition.kjv_def}`,
-          derivation: definition.derivation,
+          strong: strong,
         });
       } else {
         setData(null);

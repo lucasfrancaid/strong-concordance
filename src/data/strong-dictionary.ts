@@ -1,4 +1,4 @@
-interface Strong {
+export interface Strong {
     lemma: string;
     xlit: string;
     pron: string;

@@ -5,10 +5,11 @@ import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
 import { searchStrong } from "@/services/strongService";
 import { Loader2 } from "lucide-react";
+import { Strong } from "@/data/strong-dictionary";
 
 export function StrongSearch() {
   const [query, setQuery] = useState("");
-  const [result, setResult] = useState<{ number: string; definition: string; derivation: string } | null>(null);
+  const [result, setResult] = useState<{ number: string; strong: Strong } | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
 
@@ -85,8 +86,8 @@ export function StrongSearch() {
               {result.number}
             </span>
           </div>
-          <p className="text-lg whitespace-pre-line">{result.definition}</p>
-          <p className="text-lg whitespace-pre-line">{result.derivation}</p>
+          <p className="text-lg whitespace-pre-line">{`${result.strong.lemma} ${result.strong.xlit} (${result.strong.pron}) - Strong: ${result.strong.strongs_def} | KJV: ${result.strong.kjv_def}`}</p>
+          <p className="text-lg whitespace-pre-line">{result.strong.derivation}</p>
         </div>
       )}
     </div>

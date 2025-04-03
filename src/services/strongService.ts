@@ -1,24 +1,11 @@
 
-import { strongDictionary } from "@/data/strong-data";
+import { Strong, strongDictionary } from "@/data/strong-dictionary";
 
-export async function searchStrong(code: string): Promise<{ number: string; definition: string } | null> {
+export async function searchStrong(code: string): Promise<{ number: string; strong: Strong } | null> {
   // Normaliza o código Strong (maiúsculas, sem espaços)
   const normalizedCode = code.trim().toUpperCase();
   
   try {
-    // Primeira tentativa: buscar diretamente do dicionário local
-    if (strongDictionary[normalizedCode]) {
-      console.log("Código Strong encontrado no dicionário local:", normalizedCode);
-      return {
-        number: normalizedCode,
-        definition: strongDictionary[normalizedCode]
-      };
-    }
-    
-    // Se não encontrado no dicionário local, tenta a "API"
-    // Em produção, você teria uma API real conectada ao PostgreSQL
-    console.log("Código Strong não encontrado no dicionário local, tentando API:", normalizedCode);
-    
     const response = await fetch(`/api/strong/${normalizedCode}`);
     
     if (!response.ok) {
@@ -35,13 +22,6 @@ export async function searchStrong(code: string): Promise<{ number: string; defi
         return data;
       } catch (parseError) {
         console.error("Erro ao parsear resposta:", text);
-        // Fallback para o dicionário local
-        if (strongDictionary[normalizedCode]) {
-          return {
-            number: normalizedCode,
-            definition: strongDictionary[normalizedCode]
-          };
-        }
         return null;
       }
     }
@@ -50,16 +30,6 @@ export async function searchStrong(code: string): Promise<{ number: string; defi
     return data;
   } catch (error) {
     console.error("Erro ao buscar código Strong:", error);
-    
-    // Fallback para o dicionário local em caso de erro
-    if (strongDictionary[normalizedCode]) {
-      console.log("Usando fallback do dicionário local para:", normalizedCode);
-      return {
-        number: normalizedCode,
-        definition: strongDictionary[normalizedCode]
-      };
-    }
-    
     return null;
   }
 }
