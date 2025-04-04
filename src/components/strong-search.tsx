@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
@@ -14,9 +14,17 @@ export function StrongSearch() {
   const { toast } = useToast();
   const { t, i18n } = useTranslation();
 
-  const handleSearch = async (e: React.FormEvent) => {
-    e.preventDefault();
-    
+  useEffect(() => {
+    if (query.trim()) {
+      handleSearch(null);
+    }
+  }, [i18n.language]);
+
+  const handleSearch = async (e: React.FormEvent | null) => {
+    if (e) {
+      e.preventDefault();
+    }
+
     if (!query.trim()) {
       toast({
         title: t("search.empty"),
@@ -55,7 +63,7 @@ export function StrongSearch() {
 
   return (
     <div className="w-full max-w-2xl mx-auto">
-      <form onSubmit={handleSearch} className="flex flex-col sm:flex-row gap-2 mb-8">
+      <form onSubmit={(e) => handleSearch(e)} className="flex flex-col sm:flex-row gap-2 mb-8">
         <Input
           type="text"
           value={query}
