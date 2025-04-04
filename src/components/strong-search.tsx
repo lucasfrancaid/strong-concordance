@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -6,20 +5,22 @@ import { useToast } from "@/hooks/use-toast";
 import { searchStrong } from "@/services/strongService";
 import { Loader2 } from "lucide-react";
 import { Strong } from "@/data/strong-dictionary";
+import { useTranslation } from "react-i18next";
 
 export function StrongSearch() {
   const [query, setQuery] = useState("");
   const [result, setResult] = useState<{ number: string; strong: Strong } | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
+  const { t, i18n } = useTranslation();
 
   const handleSearch = async (e: React.FormEvent) => {
     e.preventDefault();
     
     if (!query.trim()) {
       toast({
-        title: "Campo vazio",
-        description: "Por favor, digite um número Strong para pesquisar",
+        title: t("search.empty"),
+        description: t("search.emptyMessage"),
         variant: "destructive",
       });
       return;
@@ -28,14 +29,14 @@ export function StrongSearch() {
     setIsLoading(true);
     
     try {
-      const strongResult = await searchStrong(query);
+      const strongResult = await searchStrong(query, i18n);
       
       if (strongResult) {
-        setResult(strongResult);
+          setResult(strongResult);
       } else {
         toast({
-          title: "Não encontrado",
-          description: `Nenhum resultado encontrado para o número Strong "${query.toUpperCase()}"`,
+          title: t("search.notFound"),
+          description: t("search.notFoundMessage", { code: query.toUpperCase() }),
           variant: "destructive",
         });
         setResult(null);
@@ -43,8 +44,8 @@ export function StrongSearch() {
     } catch (error) {
       console.error("Erro na busca:", error);
       toast({
-        title: "Erro",
-        description: "Ocorreu um erro durante a busca. Tente novamente mais tarde.",
+        title: t("search.error"),
+        description: t("search.errorMessage"),
         variant: "destructive",
       });
     } finally {
@@ -59,7 +60,7 @@ export function StrongSearch() {
           type="text"
           value={query}
           onChange={(e) => setQuery(e.target.value)}
-          placeholder="Digite o número Strong (ex: H1254 ou G3056)"
+          placeholder={t("search.placeholder")}
           className="flex-1 text-lg"
           disabled={isLoading}
         />
@@ -71,10 +72,10 @@ export function StrongSearch() {
           {isLoading ? (
             <>
               <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-              Buscando...
+              {t("search.loading")}
             </>
           ) : (
-            "Pesquisar"
+            t("search.button")
           )}
         </Button>
       </form>
@@ -86,11 +87,11 @@ export function StrongSearch() {
               {result.number}
             </span>
           </div>
-          <p className="text-lg whitespace-pre-line">{result.strong.lemma} - {result.strong.xlit}</p>
-          <p className="text-lg whitespace-pre-line"><b>Pronúncia</b>: {result.strong.pron}</p>
-          <p className="text-lg whitespace-pre-line"><b>Definição Strong</b>: {result.strong.strongs_def}</p>
-          <p className="text-lg whitespace-pre-line"><b>Definição Versão King James</b>: {result.strong.kjv_def}</p>
-          <p className="text-lg whitespace-pre-line"><b>Derivação</b>: {result.strong.derivation}</p>
+          {(result.strong.lemma || result.strong.xlit) && <p className="text-lg whitespace-pre-line">{result.strong.lemma} {result.strong.xlit}</p>}
+          {result.strong.pron && <p className="text-lg whitespace-pre-line"><b>{t("strong.pronunciation")}</b>: {result.strong.pron}</p>}
+          {result.strong.strongs_def && <p className="text-lg whitespace-pre-line"><b>{t("strong.strongDefinition")}</b>: {result.strong.strongs_def}</p>}
+          {result.strong.kjv_def && <p className="text-lg whitespace-pre-line"><b>{t("strong.kjvDefinition")}</b>: {result.strong.kjv_def}</p>}
+          {result.strong.derivation && <p className="text-lg whitespace-pre-line"><b>{t("strong.derivation")}</b>: {result.strong.derivation}</p>}
         </div>
       )}
     </div>

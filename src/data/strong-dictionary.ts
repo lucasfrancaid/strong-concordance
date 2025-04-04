@@ -8,7 +8,42 @@ export interface Strong {
 };
 
 
-export const strongDictionary: Record<string, Strong> = {
+export const strongDictionaryPT: Record<string, Strong> = {
+    "H1254": {
+        lemma: "בָּרָא",
+        xlit: "bârâʼ",
+        pron: "baw-raw'",
+        strongs_def: "criar, fazer, formar. Este verbo é usado exclusivamente para a atividade de Deus, criando algo novo que não existia antes. Raiz primária.",
+        kjv_def: "criar, fazer, formar, criador",
+        derivation: "Raiz primária",
+      },
+      "H1961": {
+        lemma: "היה / הָיָה",
+        xlit: "hayah",
+        pron: "ai-a",
+        derivation: "uma raíz primitiva (comparado a H1933 (הָוָא));",
+        strongs_def: "1. existir, 2. ser ou tornar-se, 3. vir a ser (sempre enfático, e não uma mera cópula ou auxiliar)",
+        kjv_def: ""
+    },
+      "H3068": {
+        lemma: "יהוה (YHWH)",
+        xlit: "Yhovah",
+        pron: "i-ê-o-vá",
+        derivation: "de H1961 (הָיָה); (o) auto-existente ou Eterno;",
+        strongs_def: "Jeová, nome nacional judaico de Deus",
+        kjv_def: "Jeová, o Senhor. Comparado a H3050 (יָהּ), H3069 (יְהֹוִה)."
+    },
+      "G3056": {
+        lemma: "λόγος",
+        xlit: "lógos",
+        pron: "lógos",
+        strongs_def: "palavra, declaração, assunto, razão. De G3004; algo dito (incluindo o pensamento); por implicação, um tópico, também raciocínio ou motivo.",
+        kjv_def: "palavra, dito, conta, discurso",
+        derivation: "De G3004 (λέγω)",
+      },
+}
+
+export const strongDictionaryEN: Record<string, Strong> = {
     "H1": {
         lemma: "אָב",
         xlit: "ʼâb",

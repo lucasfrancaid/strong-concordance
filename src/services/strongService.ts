@@ -1,22 +1,24 @@
+import { Strong } from "@/data/strong-dictionary";
+import { getStrongTranslation } from "@/i18n/strongTranslations";
+import { i18n } from "i18next";
 
-import { Strong, strongDictionary } from "@/data/strong-dictionary";
+export async function searchStrong(code: string, i18n: i18n): Promise<{ number: string; strong: Strong } | null> {
 
-export async function searchStrong(code: string): Promise<{ number: string; strong: Strong } | null> {
   // Normaliza o código Strong (maiúsculas, sem espaços)
   const normalizedCode = code.trim().toUpperCase();
   
   try {
     // Primeira tentativa: buscar diretamente do dicionário local
-    if (strongDictionary[normalizedCode]) {
-      console.log("Código Strong encontrado no dicionário local:", normalizedCode);
+    const strongData: Strong = getStrongTranslation(normalizedCode, i18n.language);
+    
+    if (strongData) {
       return {
         number: normalizedCode,
-        strong: strongDictionary[normalizedCode],
+        strong: strongData,
       };
     }
     
     // Se não encontrado no dicionário local, tenta a "API"
-    // Em produção, você teria uma API real conectada ao PostgreSQL
     console.log("Código Strong não encontrado no dicionário local, tentando API:", normalizedCode);
     
     const response = await fetch(`/api/strong/${normalizedCode}`);
